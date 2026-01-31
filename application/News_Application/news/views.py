@@ -16,16 +16,17 @@ from .serializers import ArticleSerializer
 
 
 def home(request):
+    """ landing page"""
     return render(request, "news/home.html")
 
 
-""" # ***************** AUNTHENTICATION FUNCTIONALITY ****************"""
-'''
-The views is for handling user aunthentication
-'''
+""" ***************** AUNTHENTICATION FUNCTIONALITY ****************"""
 
 
 def register_view(request):
+    """
+    The views is for handling user aunthentication.
+    """
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -112,7 +113,7 @@ def subscribe_journalist(request, journalist_id):
     return redirect("article_list")
 
 
-""" # ******************** ARTICLES FUNCTIONALITY ********************"""
+"""  ******************** ARTICLES FUNCTIONALITY ********************"""
 '''
 The views is for handling article, creation, updating, viewing
 and deletion
@@ -122,6 +123,7 @@ and deletion
 @login_required
 @permission_required("news.add_article", raise_exception=True)
 def create_article(request):
+    """ only journalist creates the article"""
     if request.method == "POST":
         form = ArticleForm(request.POST)
         if form.is_valid():
@@ -217,6 +219,7 @@ def delete_article(request, article_id):
 @login_required
 @permission_required("news.change_article", raise_exception=True)
 def pending_articles(request):
+    """ all unapproved articles will be displayed """
     articles = Article.objects.filter(approved=False)
     return render(request, "news/pending_articles.html", {"articles": articles})
 
@@ -231,7 +234,7 @@ def approve_article(request, article_id):
     return redirect("pending_articles")
 
 
-""" # ******************** NEWSLETTERS  CRUD FUNCTIONALITY ********************"""
+"""  ******************** NEWSLETTERS  CRUD FUNCTIONALITY ********************"""
 '''
 The views is for handling newsletter, creation, updating, viewing
 and deletion
