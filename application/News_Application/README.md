@@ -1,18 +1,68 @@
 # News_Application
 
-# Installation
-1. download the zipper file
-2. python -m pip install django mysqlclient
-3. python -m pip install -r requirements.txt
-4. python manage.py migrate
-5. python manage.py createsuperuser
-6. python manage.py runserver
+A Django-based news application with role-based access control (Reader, Journalist, Editor) for managing articles, newsletters, and subscriptions.
 
+---
 
+## Installation
 
+### Option 1: Docker Installation (Recommended)
 
-# Creating Users and Assigning Groups
-> Users are assigned to Django groups based on role:
+#### Prerequisites
+- Docker and Docker Compose installed
+
+#### Steps
+1. Clone or download the project
+2. Navigate to the project directory
+3. Run the application:
+   ```bash
+   docker-compose up
+   ```
+4. Create a superuser (in another terminal):
+   ```bash
+   docker-compose exec web python manage.py createsuperuser
+   ```
+5. Access the application at `http://localhost:8000`
+
+**Database**: MySQL will automatically start and initialize. Credentials can be found in `docker-compose.yml`
+
+---
+
+### Option 2: Local Installation
+
+#### Prerequisites
+- Python 3.11+
+- MySQL 8.0+
+
+#### Steps
+1. Download the project
+2. Install Django and MySQL client:
+   ```bash
+   python -m pip install django mysqlclient
+   ```
+3. Install dependencies:
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
+4. Configure database in `News_Application/settings.py` (ensure MySQL is running)
+5. Run migrations:
+   ```bash
+   python manage.py migrate
+   ```
+6. Create a superuser:
+   ```bash
+   python manage.py createsuperuser
+   ```
+7. Start the development server:
+   ```bash
+   python manage.py runserver
+   ```
+8. Access the application at `http://127.0.0.1:8000`
+
+---
+
+## User Management
+### Creating Users and Assigning Groups
 
 reader - can view approved articles and subscribe
 journalist - can create articles/newsletters
@@ -28,7 +78,9 @@ group = Group.objects.get(name=user.role)
 user.groups.add(group)
 user.save()
 
-# API Token Authentication
+---
+
+## API Token Authentication
 1. Generate a token for a user:
 
 from news.models import CustomUser
@@ -52,12 +104,9 @@ curl -H "Authorization: Token YOUR_TOKEN_HERE" http://127.0.0.1:8000/api/subscri
 
 Browsable API: Visit http://127.0.0.1:8000/api/subscribed-articles/ in browser login required
 
+---
 
-
-
-
-## WHAT THE APP DOES:
-Use Cases
+## Application Features
 
 Reader
 
@@ -90,5 +139,4 @@ Editor
 Third-Party API Client
 
 -Retrieve articles based on subscriptions
-
 

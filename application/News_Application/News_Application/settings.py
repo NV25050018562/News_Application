@@ -106,12 +106,12 @@ WSGI_APPLICATION = "News_Application.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "newsapp_db",  # changed the name from"db.sqlite3"
-        "USER": "root",
-        "PASSWORD": "nomfanelo.mariadb",
-        "HOST": "localhost",
-        "PORT": "3306",
+        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.mysql"),
+        "NAME": os.getenv("DB_NAME", "newsapp_db"),
+        "USER": os.getenv("DB_USER", "root"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "nomfanelo.mariadb"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "3306"),
         "OPTIONS": {
             "charset": "utf8mb4",
             "init_command": (

@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: news_app_db
+    environment:
+      MYSQL_ROOT_PASSWORD: nomfanelo.mariadb
+      MYSQL_DATABASE: newsapp_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+    networks:
+      - news_network
+
+  web:
+    build: .
+    container_name: news_app_web
+    command: >
+      sh -c "
+      echo 'Waiting for database to be ready...' &&
+      until nc -z db 3306; do
+        echo 'Database is unavailable - sleeping'
+        sleep 2
+      done &&
+      echo 'Database is up - executing migrations' &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-0f^ul+gj*yjgyp)tjy*t3=hyg&v$g8($+fp$&3tn*%!p@#!#mo
+      - DB_ENGINE=django.db.backends.mysql
+      - DB_NAME=newsapp_db
+      - DB_USER=root
+      - DB_PASSWORD=nomfanelo.mariadb
+      - DB_HOST=db
+      - DB_PORT=3306
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - news_network
+
+volumes:
+  mysql_data:
+
+networks:
+  news_network:
+    driver: bridge
